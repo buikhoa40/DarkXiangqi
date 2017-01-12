@@ -1,14 +1,21 @@
 package cn.yescallop.darkxiangqi;
 
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import java.util.List;
 
 import cn.yescallop.darkxiangqi.drawable.BoardDrawable;
 import cn.yescallop.darkxiangqi.network.Client;
@@ -50,12 +57,18 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     public void showSnackbar(final int resId) {
-        runOnUiThread(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
-                Snackbar.make(layout, resId, 2000).show();
+                while (!layout.isLaidOut()) ;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(layout, resId, 2000).show();
+                    }
+                });
             }
-        });
+        }.start();
     }
 
     public void showSnackbar(final String text) {
@@ -96,5 +109,32 @@ public class BoardActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public void showNotification() {
+        if (this.isForeground()) return;
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.event))
+                .setContentIntent(PendingIntent.getActivity(this, 0, getIntent(), PendingIntent.FLAG_CANCEL_CURRENT))
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker(getString(R.string.event))
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true)
+                .build();
+        manager.notify(0, notification);
+    }
+
+    public boolean isForeground() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> processes = manager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo process : processes) {
+            if (process.processName.equals(getPackageName())) {
+                return process.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+            }
+        }
+        return true;
     }
 }

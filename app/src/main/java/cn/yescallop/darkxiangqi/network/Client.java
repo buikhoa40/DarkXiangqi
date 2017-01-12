@@ -61,14 +61,17 @@ public class Client {
             case Packet.START_GAME:
                 StartGamePacket startGamePacket = (StartGamePacket) packet;
                 Board.getInstance().startGame(startGamePacket.first, startGamePacket.data);
+                BoardActivity.getInstance().showNotification();
                 break;
             case Packet.MOVE_PIECE:
                 MovePiecePacket movePiecePacket = (MovePiecePacket) packet;
                 Board.getInstance().getPiece(movePiecePacket.fromX, movePiecePacket.fromY).move(movePiecePacket.toX, movePiecePacket.toY, false);
+                BoardActivity.getInstance().showNotification();
                 break;
             case Packet.TURN_PIECE:
                 TurnPiecePacket turnPiecePacket = (TurnPiecePacket) packet;
                 Board.getInstance().getPiece(turnPiecePacket.x, turnPiecePacket.y).turn(false);
+                BoardActivity.getInstance().showNotification();
                 break;
             case Packet.SELECT_PIECE:
                 SelectPiecePacket selectPiecePacket = (SelectPiecePacket) packet;

@@ -8,4 +8,5 @@
     <string name="disconnect">Are you sure to disconnect from server?</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="event">New event</string>
 </resources>
