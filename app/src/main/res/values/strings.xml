@@ -3,5 +3,9 @@
     <string name="connected">Successfully connected to server</string>
     <string name="disconnected">Disconnected from server</string>
     <string name="first_you">The game has begun. You hold the chess</string>
-    <string name="first_enemy">The game has begun. The enemy hold the chess</string>
+    <string name="first_enemy">The game has begun. The enemy holds the chess</string>
+    <string name="warning">Warning</string>
+    <string name="disconnect">Are you sure to disconnect from server?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
 </resources>
