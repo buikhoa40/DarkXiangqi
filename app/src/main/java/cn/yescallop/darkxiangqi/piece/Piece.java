@@ -3,6 +3,9 @@ package cn.yescallop.darkxiangqi.piece;
 import cn.yescallop.darkxiangqi.Board;
 import cn.yescallop.darkxiangqi.Side;
 import cn.yescallop.darkxiangqi.math.Position;
+import cn.yescallop.darkxiangqi.network.Client;
+import cn.yescallop.darkxiangqi.network.packet.MovePiecePacket;
+import cn.yescallop.darkxiangqi.network.packet.TurnPiecePacket;
 
 public abstract class Piece extends Position {
 
@@ -15,12 +18,13 @@ public abstract class Piece extends Position {
     public static final int SOLDIER = 6;
 
     private final Side side;
-    public Board board;
+    protected Board board;
     private boolean turned;
 
     protected Piece(Side side, boolean turned) {
         this.side = side;
         this.turned = turned;
+        this.board = Board.getInstance();
     }
 
     public static Piece get(int id, Side side) {
@@ -83,6 +87,10 @@ public abstract class Piece extends Position {
     }
 
     public void turn() {
+        this.turn(true);
+    }
+
+    public void turn(boolean own) {
         turned = true;
         if (board.isStarted()) {
             board.changeSide();
@@ -90,10 +98,20 @@ public abstract class Piece extends Position {
             board.setSide(this.side.getAgainstSide());
         }
         board.unselect();
+        if (own) {
+            TurnPiecePacket packet = new TurnPiecePacket();
+            packet.x = this.x;
+            packet.y = this.y;
+            Client.getInstance().sendPacket(packet);
+        }
     }
 
     public void select() {
-        board.select(this);
+        this.select(true);
+    }
+
+    public void select(boolean own) {
+        board.select(this, own);
     }
 
     public boolean isSelected() {
@@ -109,15 +127,31 @@ public abstract class Piece extends Position {
     }
 
     public boolean move(int x, int y) {
-        return this.move(new Position(x, y));
+        return this.move(x, y, true);
+    }
+
+    public boolean move(int x, int y, boolean own) {
+        return this.move(new Position(x, y), own);
     }
 
     public boolean move(Position pos) {
-        if (!this.reachable(pos)) {
+        return this.move(pos, true);
+    }
+
+    public boolean move(Position pos, boolean own) {
+        if (own && !this.reachable(pos)) {
             return false;
         }
         board.setPiece(this, null);
         Piece piece = board.getPiece(pos);
+        if (own) {
+            MovePiecePacket packet = new MovePiecePacket();
+            packet.fromX = this.x;
+            packet.fromY = this.y;
+            packet.toX = pos.x;
+            packet.toY = pos.y;
+            Client.getInstance().sendPacket(packet);
+        }
         if (piece != null && piece.getId() == this.getId()) {
             board.setPiece(pos, null);
         } else {

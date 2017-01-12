@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">暗棋</string>
+    <string name="connected">成功连接到服务器</string>
+    <string name="disconnected">从服务器断开连接</string>
+    <string name="first_you">棋局已开始，你先行棋</string>
+    <string name="first_enemy">棋局已开始，对方先行棋</string>
 </resources>

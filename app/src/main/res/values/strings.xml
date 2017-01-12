@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Dark Xiangqi</string>
+    <string name="connected">Successfully connected to server</string>
+    <string name="disconnected">Disconnected from server</string>
+    <string name="first_you">The game has begun. You hold the chess</string>
+    <string name="first_enemy">The game has begun. The enemy hold the chess</string>
 </resources>

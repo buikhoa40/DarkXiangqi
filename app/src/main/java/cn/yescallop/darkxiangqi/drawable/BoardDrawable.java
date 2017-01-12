@@ -70,7 +70,7 @@ public class BoardDrawable extends Drawable {
         if (selected != null) {
             int x = selected.x;
             int y = selected.y;
-            canvas.drawBitmap(BitmapFactory.decodeResource(resources, R.drawable.selected), null, new Rect(x * gridSize + 2, y * gridSize + 2, (x + 1) * gridSize, (y + 1) * gridSize), null);
+            canvas.drawBitmap(BitmapFactory.decodeResource(resources, board.isHolding() ? R.drawable.selected : R.drawable.selected_2), null, new Rect(x * gridSize + 2, y * gridSize + 2, (x + 1) * gridSize, (y + 1) * gridSize), null);
         }
     }
 
