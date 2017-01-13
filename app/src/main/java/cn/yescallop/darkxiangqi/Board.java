@@ -17,12 +17,34 @@ public class Board {
     private Side side = null;
     private boolean holding;
     private Piece selected = null;
+    private boolean updated = false;
 
-    public Board(Resources resources, ImageView view) {
+    public Board(Resources resources, final ImageView view) {
         instance = this;
         this.resources = resources;
         this.view = view;
         view.setOnTouchListener(new BoardOnTouchListener(this));
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (updated) {
+                        BoardActivity.getInstance().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.invalidate();
+                            }
+                        });
+                        updated = false;
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }
+        }.start();
     }
 
     public static Board getInstance() {
@@ -139,7 +161,7 @@ public class Board {
     }
 
     public void updateImage() {
-        view.invalidate();
+        this.updated = true;
     }
 
     public boolean isHolding() {

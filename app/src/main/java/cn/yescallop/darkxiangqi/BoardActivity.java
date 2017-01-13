@@ -106,9 +106,8 @@ public class BoardActivity extends AppCompatActivity {
                     })
                     .setNegativeButton(R.string.cancel, null)
                     .show();
-            return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return true;
     }
 
     public void showNotification() {
@@ -135,6 +134,6 @@ public class BoardActivity extends AppCompatActivity {
                 return process.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
             }
         }
-        return true;
+        return false;
     }
 }
